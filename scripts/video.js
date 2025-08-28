@@ -10,6 +10,17 @@ function getTimeString(time) {
     return `${hour > 0 ? hour + '' : ''} hour ${minutes < 10 ? '0' + minutes : minutes} minutes ${remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds} seconds ago`;
 }
 
+// active button removing 
+
+const removeActiveClass = () => {
+
+    const buttons = document.getElementsByClassName('category-btn');
+    for (const btn of buttons) {
+        btn.classList.remove("bg-primary", "text-white");
+    }
+
+}
+
 // create load categories
 
 const loadCategories = () => {
@@ -27,9 +38,20 @@ const loadCategories = () => {
 const loadCategoryVideos = (id) => {
     // alert(id);
 
+
     fetch(` https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
         .then(res => res.json())
-        .then(data => displayVideos(data.category))
+        .then(data => {
+
+            // to make a certain button active
+            removeActiveClass();
+
+            // sob active korsi 
+            const activeBtn = document.getElementById(`btn-${id}`);
+            // console.log(activeBtn);
+            activeBtn.classList.add("bg-primary", "text-white");
+            displayVideos(data.category)
+        })
         .catch(error => console.log(error));
 }
 
@@ -55,6 +77,23 @@ const displayVideos = (videos) => {
     const videoContainer = document.getElementById('videos');
 
     videoContainer.innerHTML = '';
+
+    if (videos.length === 0) {
+        videoContainer.classList.remove("grid");
+        videoContainer.innerHTML = `
+        <div class="min-h-[300px] w-full flex flex-col gap-5 justify-center items-center">
+        
+        <img src="assets/Icon.png"/>
+
+        <h2 class="text-2xl font-bold">No videos found</h2>
+        </div>
+        `;
+        return;
+    }
+
+    else {
+        videoContainer.classList.add("grid");
+    }
 
     videos.forEach(video => {
         console.log(video);
@@ -117,7 +156,7 @@ const displayCategories = (categories) => {
 
         // create button
         const buttonContainer = document.createElement('div');
-        buttonContainer.innerHTML = `<button onclick="loadCategoryVideos(${item.category_id})" class="btn">${item.category}</button>`;
+        buttonContainer.innerHTML = `<button id="btn-${item.category_id}" onclick="loadCategoryVideos(${item.category_id})" class="btn category-btn">${item.category}</button>`;
 
 
 
