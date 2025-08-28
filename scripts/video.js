@@ -1,5 +1,15 @@
 console.log("video.js is connected");
 
+
+function getTimeString(time) {
+    const hour = parseInt(time / 3600);
+    let remainingSeconds = time % 3600;
+    const minutes = parseInt(remainingSeconds / 60);
+    remainingSeconds = remainingSeconds % 60;
+
+    return `${hour > 0 ? hour + '' : ''} hour ${minutes < 10 ? '0' + minutes : minutes} minutes ${remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds} seconds ago`;
+}
+
 // create load categories
 
 const loadCategories = () => {
@@ -45,7 +55,8 @@ const displayVideos = (videos) => {
       alt="Shoes"
       class="rounded-xl h-full w-full object-cover" />
 
-      <span class="absolute right-2 bottom-2 bg-black rounded p-1 text-white">${video.others.posted_date}</span>
+      ${video.others.posted_date.length == 0 ? '' : `<span class="absolute text-xs right-2 bottom-2 bg-black rounded p-1 text-white">${getTimeString(video.others.posted_date)}</span>`
+            }
   </figure>
   <div class="px-0 py-2 flex gap-2">
    
